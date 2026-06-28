@@ -1,0 +1,41 @@
+{
+  "name": "execution_worker",
+  "description": "Monitors Estate_Inventory for new liabilities, drafts legal correspondence, and submits to Action_Queue for human approval",
+  "instruction": { "$file": "instruction.md" },
+  "toolsets": ["POD"],
+  "visibility": "POD",
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "task_id": { "type": "string" },
+      "action_type": { "type": "string" },
+      "institution": { "type": "string" },
+      "draft_summary": { "type": "string" }
+    },
+    "required": ["task_id", "action_type", "institution"]
+  },
+  "permissions": {
+    "grants": [
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "Estate_Inventory",
+        "permission_ids": ["datastore.table.read", "datastore.record.read"]
+      },
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "Action_Queue",
+        "permission_ids": ["datastore.table.read", "datastore.record.read", "datastore.record.write"]
+      },
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "Communications_Log",
+        "permission_ids": ["datastore.table.read", "datastore.record.read", "datastore.record.write"]
+      },
+      {
+        "resource_type": "folder",
+        "resource_name": "/templates",
+        "permission_ids": ["folder.read"]
+      }
+    ]
+  }
+}
