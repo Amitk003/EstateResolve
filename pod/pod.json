@@ -1,0 +1,5 @@
+{
+  "format_version": 2,
+  "name": "estate-resolve",
+  "description": "Estate settlement workspace for managing probate execution with AI agents, document processing, and human-in-the-loop approvals."
+}
