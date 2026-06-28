@@ -1,0 +1,21 @@
+{
+  "name": "dispatch_communication",
+  "description": "Sends the approved communication to the institution and returns a task ID for logging.",
+  "type": "API",
+  "visibility": "POD",
+  "code": { "$file": "code.py" },
+  "permissions": {
+    "grants": [
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "Communications_Log",
+        "permission_ids": ["datastore.table.read", "datastore.record.read", "datastore.record.write"]
+      },
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "Action_Queue",
+        "permission_ids": ["datastore.table.read", "datastore.record.read", "datastore.record.write"]
+      }
+    ]
+  }
+}
