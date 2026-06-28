@@ -1,0 +1,38 @@
+{
+  "name": "discovery_worker",
+  "description": "Reads uploaded documents and extracts structured asset and liability records into Estate_Inventory",
+  "instruction": { "$file": "instruction.md" },
+  "toolsets": ["POD"],
+  "visibility": "POD",
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "entity_id": { "type": "string" },
+      "classification": { "type": "string", "enum": ["Asset", "Liability", "Expense"] },
+      "institution_name": { "type": "string" },
+      "account_number": { "type": "string" },
+      "estimated_value": { "type": "number" },
+      "confidence": { "type": "string", "enum": ["high", "medium", "low"] }
+    },
+    "required": ["entity_id", "classification", "institution_name", "confidence"]
+  },
+  "permissions": {
+    "grants": [
+      {
+        "resource_type": "folder",
+        "resource_name": "/documents",
+        "permission_ids": ["folder.read"]
+      },
+      {
+        "resource_type": "folder",
+        "resource_name": "/knowledge",
+        "permission_ids": ["folder.read"]
+      },
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "Estate_Inventory",
+        "permission_ids": ["datastore.table.read", "datastore.record.read", "datastore.record.write"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "Communications_Log",
+  "primary_key_column": "id",
+  "enable_rls": true,
+  "visibility": "POD",
+  "columns": [
+    {
+      "name": "direction",
+      "type": "ENUM",
+      "required": true,
+      "options": ["Outgoing", "Incoming"],
+      "description": "Whether this communication was sent or received"
+    },
+    {
+      "name": "institution",
+      "type": "TEXT",
+      "required": true,
+      "max_length": 300,
+      "description": "Name of the institution involved"
+    },
+    {
+      "name": "subject",
+      "type": "TEXT",
+      "required": true,
+      "max_length": 500,
+      "description": "Subject line of the communication"
+    },
+    {
+      "name": "body",
+      "type": "TEXT",
+      "max_length": 10000,
+      "description": "Full body text of the communication"
+    },
+    {
+      "name": "delivery_status",
+      "type": "ENUM",
+      "required": true,
+      "default": "Drafted",
+      "options": ["Drafted", "Sent", "Delivered", "Failed"],
+      "description": "Delivery status of the communication"
+    },
+    {
+      "name": "related_task_id",
+      "type": "UUID",
+      "foreign_key": { "references": "Action_Queue.id" },
+      "description": "Links back to the Action_Queue entry that generated this communication"
+    },
+    {
+      "name": "zk_proof_ref",
+      "type": "TEXT",
+      "max_length": 500,
+      "description": "Reference to the zero-knowledge proof attached to this communication"
+    }
+  ]
+}
