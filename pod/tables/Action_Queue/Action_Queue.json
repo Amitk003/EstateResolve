@@ -1,0 +1,46 @@
+{
+  "name": "Action_Queue",
+  "primary_key_column": "id",
+  "enable_rls": true,
+  "visibility": "POD",
+  "columns": [
+    {
+      "name": "related_entity_id",
+      "type": "UUID",
+      "required": true,
+      "foreign_key": { "references": "Estate_Inventory.id" },
+      "description": "Links this action to an entry in Estate_Inventory"
+    },
+    {
+      "name": "action_type",
+      "type": "ENUM",
+      "required": true,
+      "options": ["Close Account", "Notify Creditor", "Transfer Funds", "File Claim", "Cancel Subscription", "Other"],
+      "description": "Type of action to be performed"
+    },
+    {
+      "name": "draft_payload",
+      "type": "JSON",
+      "description": "The drafted correspondence or action details as JSON"
+    },
+    {
+      "name": "human_approval_status",
+      "type": "ENUM",
+      "required": true,
+      "default": "Pending",
+      "options": ["Pending", "Approved", "Rejected", "Executed"],
+      "description": "Current approval state of this action"
+    },
+    {
+      "name": "execution_timestamp",
+      "type": "DATETIME",
+      "description": "When the action was executed after approval"
+    },
+    {
+      "name": "feedback",
+      "type": "TEXT",
+      "max_length": 2000,
+      "description": "Human feedback in case of rejection or edits"
+    }
+  ]
+}
