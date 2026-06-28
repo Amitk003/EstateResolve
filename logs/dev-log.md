@@ -70,3 +70,18 @@
   - Keeps SSN and cause of death hidden via ZK proof commitment
   - Creates Communication_Log entry with reference to the ZK proof
 - Both functions mirror the @lemmaoracle/sdk API patterns
+
+## 2026-06-28 - Dashboard UI
+
+- Created branch: feature/dashboard-ui (from main)
+- Scaffolded Next.js app with TypeScript and Tailwind in frontend/
+- Installed lemma-sdk and @tanstack/react-query
+- Created Lemma client utility (lib/lemma-client.ts)
+- Created React Query provider wrapper (lib/providers.tsx)
+- Built 3 core dashboard panels as client components:
+  - IngestionDropzone: drag-and-drop file upload area with status tracking
+  - EstateLedger: sortable/filterable data table for Estate_Inventory with classification badges
+  - ActionDesk: approval queue with approve/reject buttons and draft preview
+- Dashboard layout features 3-column design (sidebar + ledger + action desk)
+- Clean, minimal design without em dashes or emojis
+- Build verified successful with Next.js 16.2.9
