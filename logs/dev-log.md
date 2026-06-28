@@ -56,3 +56,17 @@
   - Step 5b (FUNCTION): handle_rejection - record feedback, loop back to redraft
 - Created dispatch_communication function: updates Action_Queue status and creates Communications_Log entry
 - Created update_entity_status function: updates Estate_Inventory resolution_status
+
+## 2026-06-28 - ZK Proofs
+
+- Created branch: feature/zk-proofs (from main)
+- Created issue_credential function:
+  - Generates W3C Verifiable Credential for death certificates
+  - Uses BBS+ signature format for selective disclosure
+  - Marks sensitive fields (SSN, cause of death) as non-revealed by default
+- Created generate_zk_proof function:
+  - Generates selective disclosure proofs for specific attributes
+  - Reveals only legal_name, date_of_death, and executor_authorization to institutions
+  - Keeps SSN and cause of death hidden via ZK proof commitment
+  - Creates Communication_Log entry with reference to the ZK proof
+- Both functions mirror the @lemmaoracle/sdk API patterns
