@@ -16,3 +16,13 @@
   - Communications_Log: direction, institution, subject, body, delivery_status, related_task_id (FK to Action_Queue), zk_proof_ref
 - All tables use enable_rls: true (row-level security per executor)
 - Foreign keys established between tables for relational integrity
+
+## 2026-06-28 - Document store
+
+- Created branch: feature/document-store (from main)
+- Set up file folder structure: documents/, templates/, knowledge/
+- Created folder metadata (.folder.json) for each directory
+- Created document templates:
+  - notice_of_death.md - template for notifying institutions of death and requesting account closure
+  - creditor_notification.md - template for notifying creditors
+  - probate_guidelines.md - knowledge base with executor instructions
