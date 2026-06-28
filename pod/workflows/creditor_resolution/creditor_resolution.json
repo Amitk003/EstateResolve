@@ -1,0 +1,126 @@
+{
+  "name": "creditor_resolution",
+  "description": "Handles the end-to-end process of resolving a creditor claim: agent drafts notice, human approves or rejects, and communication is dispatched.",
+  "start": {
+    "type": "DATASTORE_EVENT",
+    "config": {
+      "table_name": "Estate_Inventory",
+      "operations": ["INSERT"]
+    }
+  },
+  "visibility": "POD",
+  "nodes": [
+    {
+      "id": "classify",
+      "type": "DECISION",
+      "label": "Is it a liability?",
+      "config": {
+        "rules": [
+          { "condition": "start.payload.classification == `Liability`", "next_node_id": "draft_notice" }
+        ]
+      }
+    },
+    {
+      "id": "draft_notice",
+      "type": "AGENT",
+      "label": "Draft notice to creditor",
+      "config": {
+        "agent_name": "execution_worker",
+        "input_mapping": {
+          "entity_id": { "type": "expression", "value": "start.payload.id" },
+          "institution_name": { "type": "expression", "value": "start.payload.institution_name" },
+          "account_number": { "type": "expression", "value": "start.payload.account_number" },
+          "estimated_value": { "type": "expression", "value": "start.payload.estimated_value" },
+          "classification": { "type": "expression", "value": "start.payload.classification" }
+        }
+      }
+    },
+    {
+      "id": "human_approval",
+      "type": "FORM",
+      "label": "Review and approve notice",
+      "config": {
+        "assignee_type": "POD_ADMIN",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "approved": {
+              "type": "boolean",
+              "description": "Approve this draft notice for dispatch?"
+            },
+            "feedback": {
+              "type": "string",
+              "description": "If rejecting, provide feedback for redrafting"
+            }
+          },
+          "required": ["approved"]
+        }
+      }
+    },
+    {
+      "id": "approved_route",
+      "type": "DECISION",
+      "label": "Approved or rejected?",
+      "config": {
+        "rules": [
+          { "condition": "human_approval.approved == `true`", "next_node_id": "dispatch" }
+        ]
+      }
+    },
+    {
+      "id": "dispatch",
+      "type": "FUNCTION",
+      "label": "Dispatch communication",
+      "config": {
+        "function_name": "dispatch_communication",
+        "input_mapping": {
+          "entity_id": { "type": "expression", "value": "start.payload.id" },
+          "institution_name": { "type": "expression", "value": "start.payload.institution_name" },
+          "draft_payload": { "type": "expression", "value": "draft_notice.output" }
+        }
+      }
+    },
+    {
+      "id": "log_and_update",
+      "type": "FUNCTION",
+      "label": "Log and update status",
+      "config": {
+        "function_name": "update_entity_status",
+        "input_mapping": {
+          "entity_id": { "type": "expression", "value": "start.payload.id" },
+          "new_status": { "type": "literal", "value": "Notified" },
+          "task_id": { "type": "expression", "value": "dispatch.output.task_id" }
+        }
+      }
+    },
+    {
+      "id": "handle_rejection",
+      "type": "FUNCTION",
+      "label": "Record rejection feedback",
+      "config": {
+        "function_name": "update_entity_status",
+        "input_mapping": {
+          "entity_id": { "type": "expression", "value": "start.payload.id" },
+          "new_status": { "type": "literal", "value": "Discovered" },
+          "feedback": { "type": "expression", "value": "human_approval.feedback" }
+        }
+      }
+    },
+    {
+      "id": "end",
+      "type": "END",
+      "label": "Done"
+    }
+  ],
+  "edges": [
+    { "id": "e1", "source": "classify", "target": "end", "label": "not a liability (default)" },
+    { "id": "e2", "source": "classify", "target": "draft_notice" },
+    { "id": "e3", "source": "draft_notice", "target": "human_approval" },
+    { "id": "e4", "source": "human_approval", "target": "approved_route" },
+    { "id": "e5", "source": "approved_route", "target": "dispatch" },
+    { "id": "e6", "source": "approved_route", "target": "handle_rejection", "label": "rejected (default)" },
+    { "id": "e7", "source": "dispatch", "target": "log_and_update" },
+    { "id": "e8", "source": "log_and_update", "target": "end" },
+    { "id": "e9", "source": "handle_rejection", "target": "draft_notice" }
+  ]
+}
