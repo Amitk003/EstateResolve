@@ -1,0 +1,58 @@
+{
+  "name": "Estate_Inventory",
+  "primary_key_column": "id",
+  "enable_rls": true,
+  "visibility": "POD",
+  "columns": [
+    {
+      "name": "classification",
+      "type": "ENUM",
+      "required": true,
+      "options": ["Asset", "Liability", "Expense"],
+      "description": "Whether this entry is an asset, liability, or ongoing expense"
+    },
+    {
+      "name": "institution_name",
+      "type": "TEXT",
+      "required": true,
+      "max_length": 300,
+      "description": "Name of the bank, company, or institution"
+    },
+    {
+      "name": "account_number",
+      "type": "TEXT",
+      "max_length": 100,
+      "description": "Account number or reference identifier"
+    },
+    {
+      "name": "estimated_value",
+      "type": "FLOAT",
+      "description": "Monetary value of the asset or liability"
+    },
+    {
+      "name": "resolution_status",
+      "type": "ENUM",
+      "required": true,
+      "default": "Discovered",
+      "options": ["Discovered", "Notified", "In Progress", "Resolved", "Closed"],
+      "description": "Current status of this entity in the probate process"
+    },
+    {
+      "name": "source_doc_path",
+      "type": "FILE_PATH",
+      "max_length": 500,
+      "description": "Path to the original uploaded document in the pod file store"
+    },
+    {
+      "name": "description",
+      "type": "TEXT",
+      "max_length": 2000,
+      "description": "Additional notes or details about this entity"
+    },
+    {
+      "name": "date_discovered",
+      "type": "DATETIME",
+      "description": "When this entity was first discovered and logged"
+    }
+  ]
+}

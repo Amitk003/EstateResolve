@@ -1,0 +1,16 @@
+{
+  "name": "update_entity_status",
+  "description": "Updates the resolution_status of an Estate_Inventory entry and optionally records feedback.",
+  "type": "API",
+  "visibility": "POD",
+  "code": { "$file": "code.py" },
+  "permissions": {
+    "grants": [
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "Estate_Inventory",
+        "permission_ids": ["datastore.table.read", "datastore.record.read", "datastore.record.write"]
+      }
+    ]
+  }
+}
